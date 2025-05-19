@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "506436980209",
+    "project_id": "kindplate-b3c94",
+    "storage_bucket": "kindplate-b3c94.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506436980209:android:0ae739b23d36f6f4be0850",
+        "android_client_info": {
+          "package_name": "com.example.kindplate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "506436980209-qh0lffjdvd0obvpn8dt4puic1l6j67lg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kindplate",
+            "certificate_hash": "41567d18beef3fd949b31eb2f23ae1aadbb03f58"
+          }
+        },
+        {
+          "client_id": "506436980209-i30ch47ih4su480d73fquqp1tl41sstd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsviPNZi-AuuFS8xRWeIZ9gpRxs3fOfyk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "506436980209-i30ch47ih4su480d73fquqp1tl41sstd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
