@@ -44,5 +44,6 @@ Version Control - GitHub
    cd kindplate
 
 2. Clone the repository:
+   ```bash
    flutter pub get
    flutter run
