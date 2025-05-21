@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/app_localizations.dart';
 
+//Widgets that show translated text using AppLocalizations
+
 class TranslatedText extends StatefulWidget {
   final String text;
   final String? translationKey;
@@ -9,7 +11,7 @@ class TranslatedText extends StatefulWidget {
   final TextOverflow? overflow;
   final int? maxLines;
   final bool softWrap;
-  
+
   const TranslatedText(
     this.text, {
     Key? key,
@@ -34,11 +36,11 @@ class _TranslatedTextState extends State<TranslatedText> {
     super.didChangeDependencies();
     _translateText();
   }
-  
+
   @override
   void didUpdateWidget(TranslatedText oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.text != widget.text || 
+    if (oldWidget.text != widget.text ||
         oldWidget.translationKey != widget.translationKey) {
       _translateText();
     }
@@ -46,15 +48,18 @@ class _TranslatedTextState extends State<TranslatedText> {
 
   Future<void> _translateText() async {
     final localizations = AppLocalizations.of(context);
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final key = widget.translationKey ?? widget.text;
-      final translated = await localizations.translate(key, fallbackText: widget.text);
-      
+      final translated = await localizations.translate(
+        key,
+        fallbackText: widget.text,
+      );
+
       if (mounted) {
         setState(() {
           _translatedText = translated;
@@ -76,7 +81,7 @@ class _TranslatedTextState extends State<TranslatedText> {
     // If we're still loading or haven't started translation yet,
     // show the original text
     final displayText = _translatedText ?? widget.text;
-    
+
     return Text(
       displayText,
       style: widget.style,
@@ -98,7 +103,7 @@ class FutureTranslatedText extends StatelessWidget {
   final TextOverflow? overflow;
   final int? maxLines;
   final bool softWrap;
-  
+
   const FutureTranslatedText(
     this.text, {
     Key? key,
@@ -113,9 +118,12 @@ class FutureTranslatedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    
+
     return FutureBuilder<String>(
-      future: localizations.translate(translationKey ?? text, fallbackText: text),
+      future: localizations.translate(
+        translationKey ?? text,
+        fallbackText: text,
+      ),
       initialData: text,
       builder: (context, snapshot) {
         return Text(
@@ -129,4 +137,4 @@ class FutureTranslatedText extends StatelessWidget {
       },
     );
   }
-} 
+}

@@ -27,3 +27,6 @@ class Campaign {
     this.status = 'active',
   });
 } 
+
+//Fields constructor 
+//required keyword ensures that all fields must be provided

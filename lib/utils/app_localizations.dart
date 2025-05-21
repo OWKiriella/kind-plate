@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import '../services/translation_service.dart';
 
+//Loads translations and provides a method to get localized strings.
+
 class AppLocalizations {
   final Locale locale;
   final TranslationService _translationService = TranslationService();
   Map<String, String>? _dynamicTranslations;
-  
+
   AppLocalizations(this.locale);
-  
+
   static AppLocalizations of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
-  
+
   static const _localizedValues = {
     'en': {
       'welcome': 'WELCOME',
@@ -39,7 +41,8 @@ class AppLocalizations {
       'location': 'Location',
       'welcomeToKindPlate': 'Welcome to Kind-Plate',
       'foodInsecurityTitle': 'Food Insecurity and Malnutrition in Sri Lanka',
-      'foodInsecurityDescription': '6.7 million Sri Lankans are struggling to eat enough. Your help today can bring hope and nourishment to those in need.',
+      'foodInsecurityDescription':
+          '6.7 million Sri Lankans are struggling to eat enough. Your help today can bring hope and nourishment to those in need.',
       'latestUpdates': 'Latest Updates',
       'seeAll': 'See All',
       'noPostsAvailable': 'No posts available',
@@ -54,7 +57,8 @@ class AppLocalizations {
       'reject': 'Reject',
       'donationHistory': 'Donation History',
       'noDonationHistoryFound': 'No donation history found',
-      'yourAcceptedDonationsWillAppearHere': 'Your accepted donations will appear here',
+      'yourAcceptedDonationsWillAppearHere':
+          'Your accepted donations will appear here',
       'refresh': 'Refresh',
       'donatorName': 'Donator Name',
       'donatorDate': 'Donator Date',
@@ -96,7 +100,8 @@ class AppLocalizations {
       'location': 'ස්ථානය',
       'welcomeToKindPlate': 'කයින්ඩ්-ප්ලේට් වෙත සාදරයෙන් පිළිගනිමු',
       'foodInsecurityTitle': 'ශ්‍රී ලංකාවේ ආහාර අවිශ්වසනීයත්වය සහ පෝෂණ අඩුවීම',
-      'foodInsecurityDescription': 'ශ්‍රී ලංකාවේ මිලියන 6.7 ක් පමණ ජනතාවට ප්‍රමාණවත් ආහාර ලබා ගැනීමට අපහසු වී ඇත. ඔබේ අද උදව්ව අවශ්‍ය අයට බලාපොරොත්තුව සහ පෝෂණය ගෙන ඒමට උපකාර විය හැකිය.',
+      'foodInsecurityDescription':
+          'ශ්‍රී ලංකාවේ මිලියන 6.7 ක් පමණ ජනතාවට ප්‍රමාණවත් ආහාර ලබා ගැනීමට අපහසු වී ඇත. ඔබේ අද උදව්ව අවශ්‍ය අයට බලාපොරොත්තුව සහ පෝෂණය ගෙන ඒමට උපකාර විය හැකිය.',
       'latestUpdates': 'නවතම යාවත්කාලීන කිරීම්',
       'seeAll': 'සියල්ල බලන්න',
       'noPostsAvailable': 'ලබා ගත හැකි පළ කිරීම් නැත',
@@ -111,7 +116,8 @@ class AppLocalizations {
       'reject': 'ප්‍රතික්ෂේප කරන්න',
       'donationHistory': 'පරිත්‍යාග ඉතිහාසය',
       'noDonationHistoryFound': 'පරිත්‍යාග ඉතිහාසයක් හමු නොවීය',
-      'yourAcceptedDonationsWillAppearHere': 'ඔබගේ පිළිගත් පරිත්‍යාග මෙහි දිස් වනු ඇත',
+      'yourAcceptedDonationsWillAppearHere':
+          'ඔබගේ පිළිගත් පරිත්‍යාග මෙහි දිස් වනු ඇත',
       'refresh': 'යළි පූරණය කරන්න',
       'donatorName': 'පරිත්‍යාගශීලියාගේ නම',
       'donatorDate': 'පරිත්‍යාග දිනය',
@@ -128,43 +134,44 @@ class AppLocalizations {
       'noAcceptedDonationsFoundYet': 'තවම පිළිගත් පරිත්‍යාග හමු වී නැත',
     },
   };
-  
+
   // Method to fetch predefined strings
   String _getStaticTranslation(String key) {
-    return _localizedValues[locale.languageCode]?[key] ?? _localizedValues['en']![key]!;
+    return _localizedValues[locale.languageCode]?[key] ??
+        _localizedValues['en']![key]!;
   }
-  
+
   // Method to get dynamic translation (on-the-fly translation)
   Future<String> translateText(String text) async {
     if (locale.languageCode == 'en') {
       return text; // No translation needed for English
     }
-    
+
     try {
       return await _translationService.translate(
-        text, 
+        text,
         locale.languageCode,
-        sourceLanguage: 'en'
+        sourceLanguage: 'en',
       );
     } catch (e) {
       debugPrint('Error translating text: $e');
       return text; // Return original text if translation fails
     }
   }
-  
+
   // New method to translate any text dynamically
   Future<String> translate(String key, {String? fallbackText}) async {
     // First check if we have a predefined translation
     if (_localizedValues[locale.languageCode]?.containsKey(key) == true) {
       return _getStaticTranslation(key);
     }
-    
+
     // Check if we have a cached dynamic translation
     _dynamicTranslations ??= {};
     if (_dynamicTranslations!.containsKey(key)) {
       return _dynamicTranslations![key]!;
     }
-    
+
     // If not, translate on the fly
     if (locale.languageCode != 'en') {
       final text = fallbackText ?? key;
@@ -172,10 +179,10 @@ class AppLocalizations {
       _dynamicTranslations![key] = translated;
       return translated;
     }
-    
+
     return fallbackText ?? key;
   }
-  
+
   // Getter methods for predefined strings - ensures backward compatibility
   String get welcome => _getStaticTranslation('welcome');
   String get kindnessPlate => _getStaticTranslation('kindnessPlate');
@@ -215,17 +222,17 @@ class AppLocalizations {
 
 class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const AppLocalizationsDelegate();
-  
+
   @override
   bool isSupported(Locale locale) {
     return ['en', 'si'].contains(locale.languageCode);
   }
-  
+
   @override
   Future<AppLocalizations> load(Locale locale) async {
     return AppLocalizations(locale);
   }
-  
+
   @override
   bool shouldReload(AppLocalizationsDelegate old) => false;
-} 
+}

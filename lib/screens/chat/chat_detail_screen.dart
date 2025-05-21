@@ -9,7 +9,7 @@ class ChatDetailScreen extends StatefulWidget {
   final String officerName;
 
   const ChatDetailScreen({
-    super.key, 
+    super.key,
     required this.officerId,
     required this.officerName,
   });
@@ -18,6 +18,7 @@ class ChatDetailScreen extends StatefulWidget {
   State<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
+//Variables and Setup
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final TextEditingController _messageController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -36,10 +37,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     if (currentUserId == null) return;
 
     // Find or create a chat document
-    final chatQuery = await _firestore
-        .collection('chats')
-        .where('participants', arrayContainsAny: [currentUserId, widget.officerId])
-        .get();
+    final chatQuery =
+        await _firestore
+            .collection('chats')
+            .where(
+              'participants',
+              arrayContainsAny: [currentUserId, widget.officerId],
+            )
+            .get();
 
     if (chatQuery.docs.isNotEmpty) {
       _chatId = chatQuery.docs.first.id;
@@ -56,12 +61,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
     // Set up messages stream
     if (_chatId != null) {
-      _messagesStream = _firestore
-          .collection('chats')
-          .doc(_chatId)
-          .collection('messages')
-          .orderBy('timestamp', descending: true)
-          .snapshots();
+      _messagesStream =
+          _firestore
+              .collection('chats')
+              .doc(_chatId)
+              .collection('messages')
+              .orderBy('timestamp', descending: true)
+              .snapshots();
     }
 
     setState(() {});
@@ -69,7 +75,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   Future<void> _sendMessage() async {
     if (_messageController.text.trim().isEmpty || _chatId == null) return;
-    
+
     final currentUserId = _auth.currentUser?.uid;
     if (currentUserId == null) return;
 
@@ -80,10 +86,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           .doc(_chatId)
           .collection('messages')
           .add({
-        'senderId': currentUserId,
-        'message': _messageController.text.trim(),
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+            'senderId': currentUserId,
+            'message': _messageController.text.trim(),
+            'timestamp': FieldValue.serverTimestamp(),
+          });
 
       // Update chat's last message
       await _firestore.collection('chats').doc(_chatId).update({
@@ -141,65 +147,68 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         children: [
           // Messages list
           Expanded(
-            child: _chatId == null
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: Color(0xFF4D9164),
-                    ),
-                  )
-                : StreamBuilder<QuerySnapshot>(
-                    stream: _messagesStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text(
-                            'Error loading messages: ${snapshot.error}',
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                        );
-                      }
-
-                      if (!snapshot.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xFF4D9164),
-                          ),
-                        );
-                      }
-
-                      final messages = snapshot.data!.docs;
-                      
-                      if (messages.isEmpty) {
-                        return Center(
-                          child: Text(
-                            'No messages yet',
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 16,
+            child:
+                _chatId == null
+                    ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF4D9164),
+                      ),
+                    )
+                    : StreamBuilder<QuerySnapshot>(
+                      stream: _messagesStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error loading messages: ${snapshot.error}',
+                              style: const TextStyle(color: Colors.red),
                             ),
-                          ),
-                        );
-                      }
-
-                      return ListView.builder(
-                        reverse: true,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index].data() as Map<String, dynamic>;
-                          final isMe = message['senderId'] == _auth.currentUser?.uid;
-                          
-                          return _buildMessageBubble(
-                            message['message'] as String,
-                            isMe,
-                            message['timestamp'] as Timestamp?,
                           );
-                        },
-                      );
-                    },
-                  ),
+                        }
+
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF4D9164),
+                            ),
+                          );
+                        }
+
+                        final messages = snapshot.data!.docs;
+
+                        if (messages.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No messages yet',
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 16,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          reverse: true,
+                          padding: const EdgeInsets.all(16),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            final message =
+                                messages[index].data() as Map<String, dynamic>;
+                            final isMe =
+                                message['senderId'] == _auth.currentUser?.uid;
+
+                            return _buildMessageBubble(
+                              message['message'] as String,
+                              isMe,
+                              message['timestamp'] as Timestamp?,
+                            );
+                          },
+                        );
+                      },
+                    ),
           ),
-          
+
           // Message input field
           Container(
             decoration: BoxDecoration(
@@ -212,10 +221,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             child: Row(
               children: [
                 IconButton(
-                  icon: Icon(
-                    Icons.attach_file,
-                    color: Colors.grey.shade500,
-                  ),
+                  icon: Icon(Icons.attach_file, color: Colors.grey.shade500),
                   onPressed: () {},
                 ),
                 // Message text field
@@ -239,13 +245,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                     ),
                   ),
                 ),
-                
+
                 // Send button
                 IconButton(
-                  icon: const Icon(
-                    Icons.send,
-                    color: Color(0xFF4D9164),
-                  ),
+                  icon: const Icon(Icons.send, color: Color(0xFF4D9164)),
                   onPressed: _sendMessage,
                 ),
               ],
@@ -260,7 +263,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isMe) ...[
@@ -285,9 +289,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: isMe
-                  ? const Color(0xFF4D9164)
-                  : Colors.grey.shade200,
+              color: isMe ? const Color(0xFF4D9164) : Colors.grey.shade200,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Column(
@@ -332,4 +334,4 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       return 'Just now';
     }
   }
-} 
+}
